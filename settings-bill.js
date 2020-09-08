@@ -8,7 +8,7 @@ module.exports = function billSettings() {
 
     var smsCostTotal = 0;
 
-    var actionList =[]
+    var actionList = []
 
     function setSettings(settings) {
         smsCost = Number(settings.smsCost);
@@ -38,8 +38,8 @@ module.exports = function billSettings() {
         }
 
         else if (action === 'call') {
-            cost =callCost;
-          
+            cost = callCost;
+
         }
         actionList.push({
             type: action,
@@ -68,37 +68,46 @@ module.exports = function billSettings() {
         }, 0);
 
     }
-    function grandTotal(){
+    function grandTotal() {
 
         return getTotal('sms') + getTotal('call')
     }
-    
-    function totals(){
-     let smsTotal = getTotal('sms')
-     let callTotal = getTotal('call')
-     return {
-         smsTotal,
-         callTotal,
-         grandTotal : grandTotal()
-     }
+
+    function totals() {
+        let smsTotal = getTotal('sms')
+        let callTotal = getTotal('call')
+        return {
+            smsTotal,
+            callTotal,
+            grandTotal: grandTotal()
+        }
 
     }
 
-    function hasReachedWarningLevel()
-    {
+    function hasReachedWarningLevel() {
 
         const total = grandTotal()
-        const reachedWarningLevel = total >= WarningLevel
-        && total < criticalLevel;
+        const reachedWarningLevel = total >= warningLevel
+            && total < criticalLevel;
+            return reachedWarningLevel;
+
     }
-    function hasReachedCriticalLevel(){
+
+    function hasReachedCriticalLevel() {
 
         const total = grandTotal();
-        return total >= criticalLevel
-
-
-        
+        return total >= criticalLevel && total > 0;
     }
+    function totalClassName() {
+
+        if (hasReachedCriticalLevel()) {
+            return "danger";
+        }
+        else if (hasReachedWarningLevel()) {
+            return "warning";
+        }
+    }
+
     return {
         setSettings,
         getSettings,
@@ -110,6 +119,8 @@ module.exports = function billSettings() {
         totals,
         hasReachedWarningLevel,
         hasReachedCriticalLevel,
-       
+        totalClassName
+
     }
 }
+
