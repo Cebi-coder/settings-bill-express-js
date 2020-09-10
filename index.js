@@ -1,10 +1,13 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
-const billSettings = require('./settings-bill');
 
+var moment = require('moment');
+moment().format()
+const billSettings = require('./settings-bill');
 const app = express();
 const settingsBill = billSettings();
+
 
 app.engine('handlebars', exphbs({ layoutsDir: 'views/layouts/' }));
 app.set('view engine', 'handlebars');
@@ -52,13 +55,23 @@ app.post('/action', function (req, res) {
 
 
 app.get('/actions', function (req, res) {
+    var actionsList = settingsBill.actions()
 
-    res.render('actions', { actions: settingsBill.actions() });
+    for (let keys of actionsList) {
+        keys.prettyDate = moment(keys.timeStamp).fromNow()
+    }
+    res.render('actions', { actions: actionsList });
 });
 
 app.get('/actions/:actionType', function (req, res) {
     const actionType = req.params.actionType;
-    res.render('actions', { actions: settingsBill.actionFor(actionType) });
+
+    var actionsList = settingsBill.actionFor(actionType)
+
+    for (let keys of actionsList) {
+        keys.prettyDate = moment(keys.timeStamp).fromNow()
+    }
+    res.render('actions', { actions: actionsList });
 
 });
 

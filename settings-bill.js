@@ -1,8 +1,8 @@
 module.exports = function billSettings() {
-    var smsCost = 0
-    var callCost = 0
-    var warningLevel = 0
-    var criticalLevel = 0
+    var smsCost;
+    var callCost;
+    var warningLevel;
+    var criticalLevel;
 
     var callCostTotal = 0;
 
@@ -30,6 +30,8 @@ module.exports = function billSettings() {
     }
 
     function recordAction(action) {
+        if(action){
+      if(!hasReachedCriticalLevel()){
 
         let cost = 0;
         if (action === 'sms') {
@@ -46,6 +48,8 @@ module.exports = function billSettings() {
             cost,
             timestamp: new Date()
         });
+    }
+    }
     }
     function actions() {
 
